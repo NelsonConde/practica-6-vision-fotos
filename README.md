@@ -162,7 +162,7 @@ Los detalles de cada endpoint están en [docs/api.md](docs/api.md).
 
 ## URL de la aplicación
 
-Frontend:
+Frontend: https://nelson-frontend-hqaupnwdtq-uc.a.run.app
 
 ## Diagrama propio
 
@@ -184,6 +184,36 @@ Se creó el repositorio público de la práctica y se clonó en Google Cloud She
 
 <p align="center">
   <img src="docs/capturas/fase0-proyecto-gcp.png" alt="Proyecto activo en Google Cloud Shell" width="800">
+</p>
+
+### Fase 1 — Primer despliegue
+
+Se inicializó la infraestructura con Terraform y se creó el repositorio de Artifact Registry `nelson-imagenes`. Luego se construyeron y publicaron las imágenes `backend:v1` y `frontend:v1`.
+
+Con las imágenes disponibles en Artifact Registry, se desplegaron los servicios `nelson-backend` y `nelson-frontend` en Cloud Run. En esta fase el bucket de Cloud Storage todavía no existe, por lo que el comportamiento esperado es que el frontend cargue correctamente y el backend responda que no tiene un bucket configurado.
+
+#### Imágenes publicadas en Artifact Registry
+
+Se verificó que las imágenes del backend y frontend estuvieran disponibles en Artifact Registry con la etiqueta `v1`.
+
+<p align="center">
+  <img src="docs/capturas/fase1-artifact-registry.png" alt="Imágenes backend y frontend en Artifact Registry" width="800">
+</p>
+
+#### Frontend desplegado sin bucket configurado
+
+Se accedió al frontend desplegado en Cloud Run y se comprobó que la aplicación informa que el backend todavía no tiene un bucket configurado, comportamiento esperado para esta fase.
+
+<p align="center">
+  <img src="docs/capturas/fase1-frontend-sin-bucket.png" alt="Frontend desplegado sin bucket configurado" width="800">
+</p>
+
+#### Advertencia en los registros del backend
+
+Se consultaron los registros del servicio `nelson-backend` y se verificó la advertencia `BUCKET está vacía: no hay dónde guardar las fotos`, confirmando que el servicio está funcionando pero aún no dispone de almacenamiento persistente.
+
+<p align="center">
+  <img src="docs/capturas/fase1-backend-log-sin-bucket.png" alt="Advertencia del backend por ausencia del bucket" width="800">
 </p>
 
 ## Decisiones del reto
