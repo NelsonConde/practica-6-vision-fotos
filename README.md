@@ -156,7 +156,9 @@ Los detalles de cada endpoint están en [docs/api.md](docs/api.md).
 
 | Nombre | Código | Usuario de GitHub |
 |---|---|---|
-| | | |
+| Nelson Conde | 1152391 | NelsonConde |
+| Yoset Piedrahita | 1152390 | Yoset Alfonso Piedrahita Ramirez |
+| Jose Perez | 1152390 | anorak |
 
 ## URL de la aplicación
 
@@ -168,7 +170,21 @@ Frontend:
 
 ## Evidencias por fase
 
-<!-- Una subsección por cada fase de la guía, con capturas o salidas de comandos y unas líneas de lo que observaste. -->
+### Fase 0 — Preparación
+
+Se creó el repositorio público de la práctica y se clonó en Google Cloud Shell. También se verificó el proyecto activo de Google Cloud y se preparó el archivo `terraform.tfvars` a partir de `terraform.tfvars.example`.
+
+#### Repositorio público
+
+<p align="center">
+  <img src="docs/capturas/fase0-repositorio.png" alt="Repositorio público de la práctica" width="800">
+</p>
+
+#### Proyecto activo en Google Cloud
+
+<p align="center">
+  <img src="docs/capturas/fase0-proyecto-gcp.png" alt="Proyecto activo en Google Cloud Shell" width="800">
+</p>
 
 ## Decisiones del reto
 
