@@ -246,6 +246,36 @@ Los registros del servicio `nelson-backend` muestran la advertencia `Vision no r
   <img src="docs/capturas/fase2-backend-vision-403.png" alt="Advertencia de Cloud Vision deshabilitado en los registros del backend" width="600">
 </p>
 
+### Fase 3 — Vision habilitada
+
+Se habilitó `vision.googleapis.com` mediante Terraform para que el backend pudiera utilizar Cloud Vision. Después de aplicar la infraestructura, se subió una nueva fotografía y el servicio obtuvo correctamente las etiquetas detectadas junto con su nivel de confianza.
+
+La fotografía utilizada en esta fase fue procesada correctamente y recibió ocho etiquetas. La imagen subida en la Fase 2 permanece sin etiquetas porque el backend consulta Vision únicamente en el momento de la carga.
+
+#### Fotografía con etiquetas de Vision
+
+La nueva fotografía fue procesada por Cloud Vision y la aplicación mostró las etiquetas detectadas con sus porcentajes de confianza.
+
+<p align="center">
+  <img src="docs/capturas/fase3-foto-con-etiquetas.png" alt="Fotografía procesada por Cloud Vision con etiquetas y porcentajes de confianza" width="300">
+</p>
+
+#### Registro del backend
+
+Los registros del servicio `nelson-backend` confirman que la fotografía fue almacenada correctamente y que se obtuvieron ocho etiquetas.
+
+<p align="center">
+  <img src="docs/capturas/fase3-backend-etiquetas.png" alt="Registro del backend mostrando ocho etiquetas obtenidas" width="600">
+</p>
+
+#### Cloud Vision API habilitada
+
+Se verificó en Google Cloud Console que Cloud Vision API se encuentra habilitada y registrando solicitudes.
+
+<p align="center">
+  <img src="docs/capturas/fase3-vision-api-habilitada.png" alt="Cloud Vision API habilitada en Google Cloud Console" width="600">
+</p>
+
 ## Decisiones del reto
 
 <!-- Qué cambiaste, por qué y cómo comprobaste que funciona. -->
