@@ -216,6 +216,36 @@ Se consultaron los registros del servicio `nelson-backend` y se verificó la adv
   <img src="docs/capturas/fase1-backend-log-sin-bucket.png" alt="Advertencia del backend por ausencia del bucket" width="800">
 </p>
 
+### Fase 2 — Bucket y permiso del backend
+
+Se creó un bucket privado en Cloud Storage para almacenar las fotografías de la aplicación. El backend utiliza su cuenta de servicio para acceder al bucket mediante el rol `roles/storage.objectUser`, mientras que el acceso público al bucket permanece bloqueado.
+
+Al subir una fotografía, el backend guarda dos objetos: la imagen original en el prefijo `originales/` y una miniatura en `miniaturas/`. En esta fase Cloud Vision todavía no está habilitado, por lo que la fotografía se guarda correctamente y aparece en la galería, pero sin etiquetas.
+
+#### Bucket con los objetos almacenados
+
+Se verificó en Cloud Storage que el bucket `project-dbb36c67-9183-4c5d-aff-nelson-fotos` contiene los prefijos `originales/` y `miniaturas/`, correspondientes a la fotografía original y su miniatura.
+
+<p align="center">
+  <img src="docs/capturas/fase2-bucket-objetos.png" alt="Bucket de Cloud Storage con originales y miniaturas" width="600">
+</p>
+
+#### Galería con la fotografía sin etiquetas
+
+Se comprobó desde la aplicación desplegada que la fotografía se almacena y aparece correctamente en la galería. Como Cloud Vision todavía no está habilitado en esta fase, la imagen aparece sin etiquetas.
+
+<p align="center">
+  <img src="docs/capturas/fase2-galeria-sin-etiquetas.png" alt="Galería mostrando la fotografía sin etiquetas" width="300">
+</p>
+
+#### Advertencia de Cloud Vision en el backend
+
+Los registros del servicio `nelson-backend` muestran la advertencia `Vision no respondió: 403`, indicando que la API de Cloud Vision todavía no está habilitada. Este comportamiento es el esperado para la Fase 2.
+
+<p align="center">
+  <img src="docs/capturas/fase2-backend-vision-403.png" alt="Advertencia de Cloud Vision deshabilitado en los registros del backend" width="600">
+</p>
+
 ## Decisiones del reto
 
 <!-- Qué cambiaste, por qué y cómo comprobaste que funciona. -->
