@@ -205,7 +205,7 @@ Se verificó que las imágenes del backend y frontend estuvieran disponibles en 
 Se accedió al frontend desplegado en Cloud Run y se comprobó que la aplicación informa que el backend todavía no tiene un bucket configurado, comportamiento esperado para esta fase.
 
 <p align="center">
-  <img src="docs/capturas/fase1-frontend-sin-bucket.png" alt="Frontend desplegado sin bucket configurado" width="800">
+  <img src="docs/capturas/fase1-frontend-sin-bucket.png" alt="Frontend desplegado sin bucket configurado" width="300">
 </p>
 
 #### Advertencia en los registros del backend
