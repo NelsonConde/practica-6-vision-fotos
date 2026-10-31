@@ -158,7 +158,7 @@ Los detalles de cada endpoint están en [docs/api.md](docs/api.md).
 |---|---|---|
 | Nelson Conde | 1152391 | NelsonConde |
 | Yoset Piedrahita | 1152390 | Yoset Alfonso Piedrahita Ramirez |
-| Jose Perez | 1152390 | anorak |
+| Jose Perez | 1152375 | anorak |
 
 ## URL de la aplicación
 
