@@ -276,6 +276,26 @@ Se verificó en Google Cloud Console que Cloud Vision API se encuentra habilitad
   <img src="docs/capturas/fase3-vision-api-habilitada.png" alt="Cloud Vision API habilitada en Google Cloud Console" width="600">
 </p>
 
+### Fase 4 — Pruebas de reconocimiento
+
+Se probaron cinco tipos de fotografías para observar el comportamiento de Cloud Vision ante diferentes condiciones. Para cada imagen se registraron las primeras etiquetas devueltas, su nivel de confianza y una observación sobre el resultado.
+
+| Prueba | Fotografía | Etiqueta 1 | Etiqueta 2 | Etiqueta 3 | Comentario |
+| --- | --- | --- | --- | --- | --- |
+| 1. Objeto común bien iluminado | Mano | Finger — 98 % | Hand — 98 % | Wrist — 92 % | El modelo identificó correctamente la mano y elementos asociados con una confianza alta. |
+| 2. Elemento típico de la región | Comida típica | Food — 99 % | Ingredient — 95 % | Recipe — 84 % | Reconoció correctamente que se trataba de comida, aunque no identificó el plato específico. |
+| 3. Dibujo o logo hecho a mano | Dibujo | Sketch — 58 % | — | — | Reconoció que era un dibujo, pero no logró identificar con suficiente precisión lo representado. |
+| 4. Imagen con texto | Pantalla con documento | Text — 96 % | Electronic device — 93 % | Font — 91 % | Detectó correctamente la presencia de texto y que estaba mostrado en un dispositivo electrónico, aunque en esta fase no lee su contenido. |
+| 5. Mismo objeto a contraluz | Mano a contraluz | Finger — 98 % | Hand — 98 % | Nail — 92 % | A pesar del contraluz, el modelo siguió reconociendo correctamente la mano con niveles altos de confianza. |
+
+#### Galería de las pruebas
+
+La galería muestra las cinco fotografías utilizadas para comparar el comportamiento de Cloud Vision en condiciones y contenidos diferentes.
+
+<p align="center">
+  <img src="docs/capturas/fase4-galeria-pruebas.png" alt="Galería con las cinco fotografías utilizadas en las pruebas de Cloud Vision" width="700">
+</p>
+
 ## Decisiones del reto
 
 <!-- Qué cambiaste, por qué y cómo comprobaste que funciona. -->
