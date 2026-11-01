@@ -332,7 +332,7 @@ También se agregó una regla de ciclo de vida al bucket para eliminar automáti
 Se subió una fotografía con texto visible y se verificó que Cloud Vision pudiera leer su contenido y mostrarlo en la galería junto con las etiquetas detectadas.
 
 <p align="center">
-  <img src="docs/capturas/fase6-texto-detectado.png" alt="Fotografía con texto detectado por Cloud Vision" width="500">
+  <img src="docs/capturas/fase6-texto-detectado.png" alt="Fotografía con texto detectado por Cloud Vision" width="496" height="765">
 </p>
 
 #### Regla de ciclo de vida
@@ -340,7 +340,7 @@ Se subió una fotografía con texto visible y se verificó que Cloud Vision pudi
 El bucket fue configurado mediante Terraform para eliminar los objetos que alcancen siete días de antigüedad.
 
 <p align="center">
-  <img src="docs/capturas/fase6-ciclo-vida.png" alt="Regla de ciclo de vida de siete días" width="650">
+  <img src="docs/capturas/fase6-ciclo-vida.png" alt="Regla de ciclo de vida de siete días" width="765" height="285">
 </p>
 
 #### Cálculo de cuotas
@@ -367,19 +367,19 @@ Cloud Vision es la cuota gratuita que se agotaría primero. Cada fotografía nue
 Se ejecutó `terraform destroy` para eliminar la infraestructura de la práctica. El bucket pudo eliminarse junto con las fotografías almacenadas porque está configurado con `force_destroy = true`.
 
 <p align="center">
-  <img src="docs/capturas/fase6-destroy-completo.png" alt="Destrucción de la infraestructura con Terraform" width="750">
+  <img src="docs/capturas/fase6-destroy-completo.png" alt="Destrucción de la infraestructura con Terraform" width="1916" height="806">
 </p>
 
-Después se reconstruyó la infraestructura respetando el orden necesario: primero Artifact Registry, luego las imágenes `backend:v2` y `frontend:v2`, y finalmente el resto de los recursos mediante `terraform apply`.
+Después se reconstruyó la infraestructura respetando el orden necesario: primero se creó Artifact Registry, luego se publicaron las imágenes `backend:v2` y `frontend:v2`, y finalmente se creó nuevamente el resto de los recursos mediante `terraform apply`.
 
 <p align="center">
-  <img src="docs/capturas/fase6-reconstruccion-completa.png" alt="Reconstrucción completa de la infraestructura" width="750">
+  <img src="docs/capturas/fase6-reconstruccion-completa.png" alt="Reconstrucción completa de la infraestructura" width="1882" height="797">
 </p>
 
-Finalmente se comprobó que la aplicación volviera a funcionar correctamente después de la reconstrucción.
+Finalmente se comprobó que tanto el backend como el frontend respondieran correctamente y que la aplicación volviera a estar disponible después de la reconstrucción.
 
 <p align="center">
-  <img src="docs/capturas/fase6-aplicacion-reconstruida.png" alt="Aplicación funcionando después de la reconstrucción" width="500">
+  <img src="docs/capturas/fase6-aplicacion-reconstruida.png" alt="Aplicación funcionando después de la reconstrucción" width="898" height="185">
 </p>
 
 ## Decisiones del reto
