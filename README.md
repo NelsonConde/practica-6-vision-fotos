@@ -296,6 +296,31 @@ La galería muestra las cinco fotografías utilizadas para comparar el comportam
   <img src="docs/capturas/fase4-galeria-pruebas.png" alt="Galería con las cinco fotografías utilizadas en las pruebas de Cloud Vision" width="700">
 </p>
 
+### Fase 5 — El bucket por dentro
+
+Se inspeccionó el contenido del bucket para verificar cómo se almacenan las fotografías y sus miniaturas. También se revisaron los metadatos asociados a una miniatura y se comparó su tamaño con el archivo original correspondiente.
+
+#### Metadatos de una miniatura
+
+Se consultaron los metadatos del objeto `miniaturas/20261031-234955-57317a.jpg`. La salida confirma que el backend guardó información adicional como el autor, las etiquetas obtenidas por Cloud Vision y el estado de procesamiento.
+
+<p align="center">
+  <img src="docs/capturas/fase5-metadatos-miniatura.png" alt="Metadatos de una miniatura almacenada en Cloud Storage" width="600">
+</p>
+
+#### Comparación de tamaños
+
+Se comparó el tamaño de una fotografía original con su miniatura correspondiente.
+
+- Original: `2,051,760 bytes`
+- Miniatura: `55,562 bytes`
+
+La miniatura ocupa aproximadamente 37 veces menos espacio que la imagen original, lo que permite reducir significativamente la cantidad de datos transferidos cuando la galería muestra las fotografías.
+
+<p align="center">
+  <img src="docs/capturas/fase5-comparacion-tamanos.png" alt="Comparación del tamaño de las fotografías originales y sus miniaturas" width="600">
+</p>
+
 ## Decisiones del reto
 
 <!-- Qué cambiaste, por qué y cómo comprobaste que funciona. -->
