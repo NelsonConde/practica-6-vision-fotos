@@ -416,10 +416,46 @@ flowchart LR
 
 El bucket permanece privado y el backend accede mediante la cuenta de servicio `nelson-backend`, que tiene el permiso `roles/storage.objectUser`. Tanto el frontend como el backend son accesibles públicamente mediante `roles/run.invoker`.
 
+#### Colaboradores del repositorio
+
+Se agregaron los demás integrantes del grupo como colaboradores del repositorio para que puedan participar en el desarrollo y realizar cambios sobre el proyecto.
+
+<p align="center">
+  <img src="docs/capturas/fase0-colaboradores.png" alt="Colaboradores agregados al repositorio" width="900">
+</p>
+
 ## Decisiones del reto
 
-<!-- Qué cambiaste, por qué y cómo comprobaste que funciona. -->
+### Detección de texto
+
+Se decidió guardar el texto reconocido como un metadato de la miniatura. Cuando Vision no encuentra texto, se guarda vacío y la fotografía continúa funcionando normalmente con sus etiquetas. También se limitó el texto almacenado para evitar guardar información demasiado extensa en los metadatos.
+
+### Regla de ciclo de vida
+
+Se utilizó una regla de siete días porque es el periodo definido para la práctica y permite mantener las fotografías durante las pruebas sin almacenarlas indefinidamente. Un objeto recién creado no se elimina inmediatamente; debe alcanzar los siete días de antigüedad para cumplir la condición.
+
+La regla quedó definida en Terraform y se comprobó desde la consola de Cloud Storage.
+
+### Cuota que se agota primero
+
+Con las mediciones realizadas, Cloud Vision es la cuota gratuita que se alcanza primero. Cada fotografía utiliza dos unidades: una para `label_detection` y otra para `text_detection`. Con 1.000 unidades mensuales se pueden procesar aproximadamente 500 fotografías.
+
+### Reproducción de la infraestructura
+
+La reconstrucción se realizó respetando las dependencias del proyecto. Primero se creó Artifact Registry, después se publicaron las imágenes Docker y finalmente se creó el resto de la infraestructura con Terraform.
+
+El bucket pudo volver a utilizar el mismo nombre después de eliminarlo y ningún recurso tuvo que crearse manualmente desde la consola.
 
 ## Preguntas
 
-<!-- Las respuestas a las preguntas de la guía. -->
+### ¿Por qué la foto de la fase 2 sigue sin etiquetas después de habilitar Vision?
+
+Porque Vision se consulta únicamente cuando se sube una fotografía. La imagen de la Fase 2 fue cargada cuando la API todavía estaba deshabilitada y no se vuelve a procesar automáticamente. Para agregarle etiquetas sería necesario implementar en el backend un proceso que tome nuevamente la miniatura, la envíe a Vision y actualice sus metadatos.
+
+### ¿Qué ocurre si se elimina `storage.objectUser` de la cuenta del backend?
+
+El backend seguiría ejecutándose en Cloud Run, pero perdería el permiso para trabajar con los objetos del bucket. Fallarían operaciones como guardar fotografías, listar la galería o leer miniaturas. El usuario vería un error en la aplicación y el detalle aparecería en los registros del backend como un problema de permisos de Cloud Storage.
+
+### ¿Por qué el backend envía la miniatura a Vision y no la fotografía original?
+
+Primero, porque la miniatura pesa mucho menos y contiene suficiente información para reconocer objetos y texto. Segundo, porque trabajar con una imagen más pequeña reduce la cantidad de datos y memoria necesarios durante el procesamiento, haciendo el servicio más eficiente.
