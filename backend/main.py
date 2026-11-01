@@ -21,6 +21,7 @@ BUCKET = os.environ.get("BUCKET", "")
 LADO_MINIATURA = 1024
 MAX_ETIQUETAS = 8
 MAX_FOTOS_GALERIA = 24
+MAX_TEXTO = 1500
 
 app = Flask(__name__)
 # Cloud Run admite peticiones de hasta 32 MiB. Aquí se corta antes.
@@ -100,6 +101,22 @@ def etiquetar(datos_jpeg):
         return None, str(error)
 
 
+def leer_texto(datos_jpeg):
+    """Devuelve el texto detectado o una cadena vacía si no se pudo leer."""
+    try:
+        respuesta = vision_cliente().text_detection(
+            image=vision.Image(content=datos_jpeg)
+        )
+        if respuesta.error.message:
+            raise RuntimeError(respuesta.error.message)
+        texto = respuesta.text_annotations[0].description if respuesta.text_annotations else ""
+        # Se limita para no guardar textos enormes en los metadatos del objeto.
+        return texto[:MAX_TEXTO]
+    except Exception as error:  # noqa: BLE001
+        log.warning("Vision no pudo leer texto: %s", error)
+        return ""
+
+
 def como_json(blob):
     meta = blob.metadata or {}
     etiquetas = meta.get("etiquetas")
@@ -108,6 +125,7 @@ def como_json(blob):
         "autor": meta.get("autor", ""),
         "creado": blob.time_created.isoformat() if blob.time_created else None,
         "etiquetas": json.loads(etiquetas) if etiquetas else None,
+        "texto": meta.get("texto", ""),
         "vision": meta.get("vision", "sin etiquetas"),
         "miniatura": f"/fotos/{blob.name.removeprefix('miniaturas/').removesuffix('.jpg')}/miniatura",
     }
@@ -144,6 +162,7 @@ def subir():
     # Vision trabaja sobre la miniatura: es más liviana y para etiquetas
     # basta con una imagen pequeña.
     etiquetas, error_vision = etiquetar(miniatura)
+    texto = leer_texto(miniatura)
 
     foto_id = f"{ahora():%Y%m%d-%H%M%S}-{uuid.uuid4().hex[:6]}"
     extension = (archivo.mimetype or "image/jpeg").split("/")[-1]
@@ -157,6 +176,7 @@ def subir():
     blob.metadata = {
         "autor": autor,
         "etiquetas": json.dumps(etiquetas, ensure_ascii=False) if etiquetas else "",
+        "texto": texto,
         "vision": "ok" if etiquetas is not None else f"error: {error_vision}",
     }
     blob.upload_from_string(miniatura, content_type="image/jpeg")
