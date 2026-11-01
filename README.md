@@ -166,7 +166,37 @@ Frontend: https://nelson-frontend-hqaupnwdtq-uc.a.run.app
 
 ## Diagrama propio
 
-<!-- Tu diagrama en Mermaid de lo que desplegaste, con los nombres reales de tus recursos. -->
+La aplicación quedó desplegada con dos servicios públicos en Cloud Run. El frontend recibe las solicitudes del usuario y se comunica con el backend. El backend procesa las fotografías, genera la miniatura, consulta Cloud Vision para obtener etiquetas y texto, y guarda los archivos en el bucket privado de Cloud Storage.
+
+```mermaid
+flowchart LR
+    usuario["Usuario"]
+
+    frontend["Cloud Run<br/>nelson-frontend"]
+    backend["Cloud Run<br/>nelson-backend"]
+
+    registro["Artifact Registry<br/>nelson-imagenes"]
+
+    bucket[("Cloud Storage<br/>project-dbb36c67-9183-4c5d-aff-nelson-fotos")]
+
+    vision["Cloud Vision API"]
+
+    sa["Service Account<br/>nelson-backend"]
+
+    usuario -->|"Accede a la aplicación"| frontend
+    frontend -->|"POST /fotos<br/>GET /fotos"| backend
+
+    registro -.->|"frontend:v2"| frontend
+    registro -.->|"backend:v2"| backend
+
+    backend -->|"label_detection<br/>text_detection"| vision
+    backend -->|"Guarda originales y miniaturas"| bucket
+
+    backend -.->|"Ejecuta con"| sa
+    sa -.->|"roles/storage.objectUser"| bucket
+```
+
+El bucket permanece privado y el backend accede mediante la cuenta de servicio `nelson-backend`, que tiene el permiso `roles/storage.objectUser`. Tanto el frontend como el backend son accesibles públicamente mediante `roles/run.invoker`.
 
 ## Evidencias por fase
 
@@ -178,6 +208,14 @@ Se creó el repositorio público de la práctica y se clonó en Google Cloud She
 
 <p align="center">
   <img src="docs/capturas/fase0-repositorio.png" alt="Repositorio público de la práctica" width="800">
+</p>
+
+#### Colaboradores del repositorio
+
+Se agregaron los demás integrantes del grupo como colaboradores del repositorio para que puedan participar en el desarrollo y realizar cambios sobre el proyecto.
+
+<p align="center">
+  <img src="docs/capturas/fase0-colaboradores.png" alt="Colaboradores agregados al repositorio" width="900">
 </p>
 
 #### Proyecto activo en Google Cloud
@@ -380,48 +418,6 @@ Finalmente se comprobó que tanto el backend como el frontend respondieran corre
 
 <p align="center">
   <img src="docs/capturas/fase6-aplicacion-reconstruida.png" alt="Aplicación funcionando después de la reconstrucción" width="898" height="185">
-</p>
-
-## Diagrama propio
-
-La aplicación quedó desplegada con dos servicios públicos en Cloud Run. El frontend recibe las solicitudes del usuario y se comunica con el backend. El backend procesa las fotografías, genera la miniatura, consulta Cloud Vision para obtener etiquetas y texto, y guarda los archivos en el bucket privado de Cloud Storage.
-
-```mermaid
-flowchart LR
-    usuario["Usuario"]
-
-    frontend["Cloud Run<br/>nelson-frontend"]
-    backend["Cloud Run<br/>nelson-backend"]
-
-    registro["Artifact Registry<br/>nelson-imagenes"]
-
-    bucket[("Cloud Storage<br/>project-dbb36c67-9183-4c5d-aff-nelson-fotos")]
-
-    vision["Cloud Vision API"]
-
-    sa["Service Account<br/>nelson-backend"]
-
-    usuario -->|"Accede a la aplicación"| frontend
-    frontend -->|"POST /fotos<br/>GET /fotos"| backend
-
-    registro -.->|"frontend:v2"| frontend
-    registro -.->|"backend:v2"| backend
-
-    backend -->|"label_detection<br/>text_detection"| vision
-    backend -->|"Guarda originales y miniaturas"| bucket
-
-    backend -.->|"Ejecuta con"| sa
-    sa -.->|"roles/storage.objectUser"| bucket
-```
-
-El bucket permanece privado y el backend accede mediante la cuenta de servicio `nelson-backend`, que tiene el permiso `roles/storage.objectUser`. Tanto el frontend como el backend son accesibles públicamente mediante `roles/run.invoker`.
-
-#### Colaboradores del repositorio
-
-Se agregaron los demás integrantes del grupo como colaboradores del repositorio para que puedan participar en el desarrollo y realizar cambios sobre el proyecto.
-
-<p align="center">
-  <img src="docs/capturas/fase0-colaboradores.png" alt="Colaboradores agregados al repositorio" width="900">
 </p>
 
 ## Decisiones del reto
