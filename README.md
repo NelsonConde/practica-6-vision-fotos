@@ -332,7 +332,7 @@ También se agregó una regla de ciclo de vida al bucket para eliminar automáti
 Se subió una fotografía con texto visible y se verificó que Cloud Vision pudiera leer su contenido y mostrarlo en la galería junto con las etiquetas detectadas.
 
 <p align="center">
-  <img src="docs/capturas/fase6-texto-detectado.png" alt="Fotografía con texto detectado por Cloud Vision" width="496" height="765">
+  <img src="docs/capturas/fase6-texto-detectado.png" alt="Fotografía con texto detectado por Cloud Vision" width="300">
 </p>
 
 #### Regla de ciclo de vida
@@ -381,6 +381,40 @@ Finalmente se comprobó que tanto el backend como el frontend respondieran corre
 <p align="center">
   <img src="docs/capturas/fase6-aplicacion-reconstruida.png" alt="Aplicación funcionando después de la reconstrucción" width="898" height="185">
 </p>
+
+## Diagrama propio
+
+La aplicación quedó desplegada con dos servicios públicos en Cloud Run. El frontend recibe las solicitudes del usuario y se comunica con el backend. El backend procesa las fotografías, genera la miniatura, consulta Cloud Vision para obtener etiquetas y texto, y guarda los archivos en el bucket privado de Cloud Storage.
+
+```mermaid
+flowchart LR
+    usuario["Usuario"]
+
+    frontend["Cloud Run<br/>nelson-frontend"]
+    backend["Cloud Run<br/>nelson-backend"]
+
+    registro["Artifact Registry<br/>nelson-imagenes"]
+
+    bucket[("Cloud Storage<br/>project-dbb36c67-9183-4c5d-aff-nelson-fotos")]
+
+    vision["Cloud Vision API"]
+
+    sa["Service Account<br/>nelson-backend"]
+
+    usuario -->|"Accede a la aplicación"| frontend
+    frontend -->|"POST /fotos<br/>GET /fotos"| backend
+
+    registro -.->|"frontend:v2"| frontend
+    registro -.->|"backend:v2"| backend
+
+    backend -->|"label_detection<br/>text_detection"| vision
+    backend -->|"Guarda originales y miniaturas"| bucket
+
+    backend -.->|"Ejecuta con"| sa
+    sa -.->|"roles/storage.objectUser"| bucket
+```
+
+El bucket permanece privado y el backend accede mediante la cuenta de servicio `nelson-backend`, que tiene el permiso `roles/storage.objectUser`. Tanto el frontend como el backend son accesibles públicamente mediante `roles/run.invoker`.
 
 ## Decisiones del reto
 
