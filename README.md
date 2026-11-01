@@ -321,6 +321,67 @@ La miniatura ocupa aproximadamente 37 veces menos espacio que la imagen original
   <img src="docs/capturas/fase5-comparacion-tamanos.png" alt="Comparación del tamaño de las fotografías originales y sus miniaturas" width="600">
 </p>
 
+### Fase 6 — Reto: leer, limpiar y contar
+
+En esta fase se agregó la detección de texto con Cloud Vision mediante `text_detection`, además del reconocimiento de etiquetas que ya utilizaba la aplicación. El backend procesa la miniatura de cada nueva fotografía, guarda el texto detectado como metadato y lo envía al frontend para mostrarlo en la galería.
+
+También se agregó una regla de ciclo de vida al bucket para eliminar automáticamente los objetos cuando cumplen siete días de antigüedad. Finalmente, se calcularon las cuotas usando los datos reales de las fotografías almacenadas y se comprobó que toda la infraestructura puede destruirse y reconstruirse nuevamente con Terraform.
+
+#### Detección de texto
+
+Se subió una fotografía con texto visible y se verificó que Cloud Vision pudiera leer su contenido y mostrarlo en la galería junto con las etiquetas detectadas.
+
+<p align="center">
+  <img src="docs/capturas/fase6-texto-detectado.png" alt="Fotografía con texto detectado por Cloud Vision" width="500">
+</p>
+
+#### Regla de ciclo de vida
+
+El bucket fue configurado mediante Terraform para eliminar los objetos que alcancen siete días de antigüedad.
+
+<p align="center">
+  <img src="docs/capturas/fase6-ciclo-vida.png" alt="Regla de ciclo de vida de siete días" width="650">
+</p>
+
+#### Cálculo de cuotas
+
+Para el cálculo se utilizaron los datos reales de nueve fotografías almacenadas antes de realizar la reconstrucción:
+
+- Originales: **18.123.468 bytes**
+- Miniaturas: **663.227 bytes**
+- Total almacenado: **18.786.695 bytes**
+- Promedio por fotografía: aproximadamente **2.087.411 bytes**
+- Promedio de una miniatura: aproximadamente **73.692 bytes**
+
+| Recurso | Cuota | Consumo aproximado | Capacidad estimada |
+| --- | ---: | ---: | ---: |
+| Almacenamiento | 5 GB | ~2,09 MB por foto | ~2.395 fotos |
+| Operaciones Clase A | 5.000/mes | ~3 por carga completa | ~1.666 fotos |
+| Cloud Vision | 1.000 unidades/mes | 2 unidades por foto | **500 fotos** |
+| Salida de datos | Sin cuota gratuita | ~72 KiB por miniatura | Tiene costo desde la transferencia |
+
+Cloud Vision es la cuota gratuita que se agotaría primero. Cada fotografía nueva utiliza una unidad para `label_detection` y otra para `text_detection`, por lo que las 1.000 unidades disponibles permiten procesar aproximadamente **500 fotografías al mes**.
+
+#### Destrucción y reproducción
+
+Se ejecutó `terraform destroy` para eliminar la infraestructura de la práctica. El bucket pudo eliminarse junto con las fotografías almacenadas porque está configurado con `force_destroy = true`.
+
+<p align="center">
+  <img src="docs/capturas/fase6-destroy-completo.png" alt="Destrucción de la infraestructura con Terraform" width="750">
+</p>
+
+Después se reconstruyó la infraestructura respetando el orden necesario: primero Artifact Registry, luego las imágenes `backend:v2` y `frontend:v2`, y finalmente el resto de los recursos mediante `terraform apply`.
+
+<p align="center">
+  <img src="docs/capturas/fase6-reconstruccion-completa.png" alt="Reconstrucción completa de la infraestructura" width="750">
+</p>
+
+Finalmente se comprobó que la aplicación volviera a funcionar correctamente después de la reconstrucción.
+
+<p align="center">
+  <img src="docs/capturas/fase6-aplicacion-reconstruida.png" alt="Aplicación funcionando después de la reconstrucción" width="500">
+</p>
+
 ## Decisiones del reto
 
 <!-- Qué cambiaste, por qué y cómo comprobaste que funciona. -->
